@@ -23,6 +23,7 @@ Guidelines:
 - Title is the first `#`.
 - Metadata is a compact quote block. Keep internal local paths, block ids, decision ids, and private tracking anchors out of reader-facing docs.
 - Complete specs with UX/UI/demo evidence should name the authority source in the header.
+- Published/exported artifacts must still have a non-empty title. An empty platform title is a delivery failure, not a cosmetic issue.
 - If the platform uses another metadata format, keep the same fields semantically.
 
 ## 2. Macro Shape
@@ -93,6 +94,7 @@ Use a resource list when the document must hand off work across functions.
 Rules:
 
 - Use one function heading once, then group modules below it.
+- A function heading must contain at least one module heading before checklist items. Do not flatten all tasks directly under `Engineering`, `UX / UI`, `Audio`, etc.
 - One checklist item equals one deliverable.
 - Do not use a table for the resource list.
 - Within the resource-list section, do not insert blank lines before every module heading. Only insert one blank line before the second and later function headings.
@@ -103,21 +105,46 @@ Rules:
 When UX/UI/demo exists:
 
 - Use UX/UI/demo screenshots as interface authority.
+- A complete spec with a UX/UI/demo source must include real screenshots near the relevant rules, or an explicit media handoff/manifest explaining why screenshots could not be inserted.
 - Do not keep early low-fidelity UI sketches as if they were final interface evidence.
 - State whether values seen in screenshots are formal configuration, placeholder/demo values, TBD, or not relevant.
 - If UX shows a reusable component, write the component's reuse scope, close/stacking rules, limits, and ownership boundary.
 
 ## 8. Automated Checks
 
-`scripts/structure_lint.py` covers the mechanical subset:
+`scripts/structure_lint.py` covers the mechanical subset.
 
+Use the source gate before handoff:
+
+```bash
+python3 scripts/structure_lint.py <draft.md>
+```
+
+If the document is exported or published through a platform adapter, run the rendered gate on the exported/published artifact:
+
+```bash
+python3 scripts/structure_lint.py --rendered <exported.md|html|xml>
+```
+
+Add `--require-numbered-headings` only when that adapter is expected to generate numbered feature headings:
+
+```bash
+python3 scripts/structure_lint.py --rendered --require-numbered-headings <exported.md|html|xml>
+```
+
+The linter checks:
+
+- Missing or empty document title.
 - Inline role/color markers in headings.
 - Header metadata not using quote-block style.
 - Visible planning-facet labels.
 - Internal anchors / local paths leaking into reader docs.
 - `grey/gray` color usage.
 - Duplicate resource-list function headings.
+- Resource-list function headings without module headings.
 - Long paragraphs, missing visual captions, long image alt, bold headings, dense resource items.
+- Complete specs with UX/UI/demo source but no screenshot or media handoff.
 - Complete specs retaining low-fidelity SVG/whiteboard-style UI sketches.
+- Rendered h3/h4 missing generated heading numbers when `--require-numbered-headings` is enabled.
 
 Lint is a floor, not a substitute for judgment.

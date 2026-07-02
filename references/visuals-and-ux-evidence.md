@@ -38,6 +38,8 @@ Use this pipeline when UX/UI/demo exists:
 6. Record source, insertion point, authority, value status, and uncertainty in a media manifest.
 7. Remove early low-fidelity UI sketches unless they explain non-UI logic that UX does not cover; mark those as `non-ui-diagram-exception`.
 
+Do not treat a UX/UI/demo link alone as enough for a complete spec. The reader should see the relevant interface while reading the rule. If the current environment cannot export or insert screenshots, create a media handoff/manifest that names the missing screenshots, source links, intended insertion points, and blocker.
+
 ## 4. Figma Or Design Tool Adapter
 
 If Figma or another design-tool adapter is available:
@@ -80,6 +82,7 @@ Use `templates/media-manifest-template.md` or this field set:
 - Screenshot is non-empty, readable, and cropped to the relevant area.
 - Visual is near the text it explains.
 - Caption explains the reading path or state difference.
+- A complete spec with a UX/UI/demo source has screenshots or an explicit media handoff/manifest.
 - Screenshot values are not silently treated as final rules.
 - Complete specs do not retain early UI SVGs as final interface evidence.
 - Uncertain mappings are labeled `needs-followup`.

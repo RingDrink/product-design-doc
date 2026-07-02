@@ -45,6 +45,8 @@ If a document platform is available:
 - Prefer platform-native structures for headings, lists, tables, images, and comments.
 - Before overwriting a published doc, explain the impact and get confirmation unless the user explicitly asked for overwrite.
 - When editing an existing published doc with comments/images/embedded blocks, prefer localized edits and verify after writing.
+- After publishing or exporting, fetch/export the produced artifact when possible and run rendered lint: `python3 scripts/structure_lint.py --rendered <exported.md|html|xml>`.
+- If the platform adapter is supposed to generate numbered feature headings, run the rendered lint with `--require-numbered-headings`.
 - If publishing fails or permissions are missing, deliver the Markdown package and a publish handoff.
 
 Potential platforms include team wikis, document suites, issue trackers, code-hosted docs, or local docs repos. None is required by Core.
@@ -59,7 +61,12 @@ If the environment has a Figma connector, follow its local skill/tool instructio
 
 Core lint is `scripts/structure_lint.py` and has no external dependency.
 
-Teams may add stricter local checks, but local checks should not change the meaning of Core. If a local check is about platform rendering or team style, keep it in the adapter layer.
+Use two gates:
+
+- **Source gate**: `python3 scripts/structure_lint.py <draft.md>` before handoff.
+- **Rendered gate**: `python3 scripts/structure_lint.py --rendered <exported.md|html|xml>` after a publishing/export adapter changes the artifact.
+
+Teams may add stricter local checks, but local checks should not change the meaning of Core. If a local check is about platform rendering, generated numbering, or team style, keep it in the adapter layer and document the exact command.
 
 ## 6. Long-Run / Quota Adapter
 

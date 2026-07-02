@@ -20,10 +20,11 @@ Copy this directory into your agent's skills folder (e.g. `~/.claude/skills/`, `
 ```bash
 python3 scripts/structure_lint.py draft.md          # ERRORs fail
 python3 scripts/structure_lint.py --strict draft.md # WARNs also fail
+python3 scripts/structure_lint.py --rendered exported.html
 ```
 
 Lint is a floor, not a substitute for judgment — occasional false positives (e.g. `D-Pad-1`-shaped strings matching the internal-id pattern, `[[wikilinks]]`) can be overridden deliberately.
 
 ## Notes
 
-- Resource-list examples use `<text color="...">` markup, which renders natively on Feishu/Lark docs; on plain Markdown platforms replace it with bold text.
+- Resource-list examples use `<text color="...">` markup as an optional priority-color convention. If the target platform does not support it, replace it with plain text or bold priority labels.

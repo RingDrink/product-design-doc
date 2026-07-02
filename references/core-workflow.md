@@ -101,4 +101,6 @@ If the project has an existing handoff, task log, or memory adapter, write there
 - Each feature point has enough action, rule, feedback, edge case, and implementation handoff detail for the document stage.
 - Complete specs do not use early low-fidelity UI sketches as final interface authority.
 - Visuals are placed near the rules they explain.
-- `scripts/structure_lint.py` passes with no ERRORs.
+- Source lint passes with no ERRORs: `python3 scripts/structure_lint.py <draft.md>`.
+- If a publishing/export adapter is used, rendered lint also passes with no ERRORs: `python3 scripts/structure_lint.py --rendered <exported.md|html|xml>`.
+- If that adapter is expected to generate numbered feature headings, add `--require-numbered-headings` to the rendered lint command.

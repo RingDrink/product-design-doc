@@ -36,6 +36,8 @@ Produce a readable product/game feature design doc in Markdown.
 - If UX/UI/demo exists, follow `references/visuals-and-ux-evidence.md`; use real UX evidence and do not keep early UI SVGs as final interface authority.
 - Do not expose internal local paths, private tracking ids, or workflow-only labels in the reader-facing doc.
 - Missing facts must be asked, marked `TBD`, or listed in follow-up. Do not fabricate.
+- Resource lists must use `function heading -> module heading -> checklist`; do not put checklist items directly under a function heading.
+- If the doc is exported/published through an adapter, run rendered lint on the exported artifact. Use `--require-numbered-headings` only when that adapter promises generated feature-heading numbers.
 
 ## Deliverables
 
@@ -44,3 +46,4 @@ Produce a readable product/game feature design doc in Markdown.
 - `media-manifest.md` if media is used
 - `handoff.md` if incomplete
 - Lint result from `python3 scripts/structure_lint.py <draft.md>`
+- Rendered lint result from `python3 scripts/structure_lint.py --rendered <exported.md|html|xml>` if exported/published

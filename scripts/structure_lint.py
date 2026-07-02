@@ -7,6 +7,8 @@ signals. It does not judge design quality.
 Usage:
     python3 structure_lint.py [--strict] draft.md
     cat draft.md | python3 structure_lint.py [--strict] -
+    python3 structure_lint.py --rendered exported.md
+    python3 structure_lint.py --rendered --require-numbered-headings exported.html
 """
 from __future__ import annotations
 
@@ -103,6 +105,14 @@ def plain_text(line: str) -> str:
     return line.replace("**", "").replace("__", "").replace("*", "").replace("_", "").strip()
 
 
+def strip_tags(text: str) -> str:
+    return re.sub(r"<[^>]+>", "", text).strip()
+
+
+def line_for_offset(text: str, offset: int) -> int:
+    return text.count("\n", 0, offset) + 1
+
+
 def heading_events(lines: list[str]) -> list[tuple[int, int, str, bool]]:
     out: list[tuple[int, int, str, bool]] = []
     resource_level: int | None = None
@@ -120,6 +130,84 @@ def heading_events(lines: list[str]) -> list[tuple[int, int, str, bool]]:
             in_resource = True
         out.append((i, level, text, in_resource))
     return out
+
+
+def rendered_heading_events(lines: list[str]) -> list[tuple[int, int, str, bool]]:
+    """Heading events from rendered Markdown/HTML/XML exports.
+
+    Publishing adapters often return HTML/XML in one long line. This accepts both
+    closed headings (`<h3>Title</h3>`) and loose nested heading dumps, then reuses
+    the same resource-list tracking as Markdown source mode.
+    """
+    full = "\n".join(lines)
+    if "<h" not in full.lower():
+        return heading_events(lines)
+
+    raw: list[tuple[int, int, int, str]] = []
+    seen_offsets: set[int] = set()
+
+    for match in re.finditer(r"<h([1-6])(?:\s+[^>]*)?>(.*?)</h\1>", full, re.IGNORECASE | re.DOTALL):
+        raw.append((
+            match.start(),
+            line_for_offset(full, match.start()),
+            int(match.group(1)),
+            strip_tags(match.group(2)),
+        ))
+        seen_offsets.add(match.start())
+
+    block_tag = r"<(?:h[1-6]\b|p\b|ul\b|ol\b|table\b|checkbox\b|blockquote\b|hr\b|/h[1-6]\b|/section\b|section\b)"
+    for match in re.finditer(r"<h([1-6])(?:\s+[^>]*)?>(.*?)(?=" + block_tag + r"|$)", full, re.IGNORECASE | re.DOTALL):
+        if match.start() in seen_offsets:
+            continue
+        text_part = re.split(block_tag, match.group(2), maxsplit=1, flags=re.IGNORECASE)[0]
+        raw.append((
+            match.start(),
+            line_for_offset(full, match.start()),
+            int(match.group(1)),
+            strip_tags(text_part),
+        ))
+
+    raw.sort(key=lambda item: item[0])
+    out: list[tuple[int, int, str, bool]] = []
+    resource_level: int | None = None
+    for _offset, line_no, level, text in raw:
+        if resource_level is not None and level <= resource_level:
+            resource_level = None
+        in_resource = resource_level is not None
+        if RESOURCE_HEADING_RE.search(text):
+            resource_level = level
+            in_resource = True
+        out.append((line_no - 1, level, text, in_resource))
+    return out
+
+
+def check_document_title(lines: list[str], rendered: bool) -> list[Finding]:
+    full = "\n".join(lines)
+    if rendered:
+        title_match = re.search(r"<title(?:\s+[^>]*)?>(.*?)</title>", full, re.IGNORECASE | re.DOTALL)
+        if title_match:
+            if strip_tags(title_match.group(1)):
+                return []
+            return [Finding(
+                "empty-title",
+                "ERROR",
+                line_for_offset(full, title_match.start()),
+                title_match.group(0)[:120],
+                "Rendered document has an empty title; make the first Markdown `# Title` or platform title non-empty.",
+            )]
+        events = rendered_heading_events(lines)
+    else:
+        events = heading_events(lines)
+
+    if any(level == 1 and plain_text(text) for _i, level, text, _in_resource in events):
+        return []
+    return [Finding(
+        "missing-title",
+        "ERROR",
+        1,
+        "",
+        "Design docs should start with a visible `# Title` so the reader and published document have a stable title.",
+    )]
 
 
 def check_role_marker_inline(lines: list[str]) -> list[Finding]:
@@ -275,6 +363,43 @@ def check_resource_headings(lines: list[str]) -> list[Finding]:
     return out
 
 
+def check_resource_missing_modules(lines: list[str], rendered: bool) -> list[Finding]:
+    """Resource-list function headings should contain module headings before tasks."""
+    out: list[Finding] = []
+    events = rendered_heading_events(lines) if rendered else heading_events(lines)
+    for idx, (line_idx, level, text, in_resource) in enumerate(events):
+        if not in_resource or RESOURCE_HEADING_RE.search(text):
+            continue
+        prev_resource = None
+        for j in range(idx - 1, -1, -1):
+            if events[j][3] and RESOURCE_HEADING_RE.search(events[j][2]):
+                prev_resource = events[j]
+                break
+        if prev_resource is None:
+            continue
+        resource_level = prev_resource[1]
+        if level != resource_level + 1:
+            continue
+
+        end = len(events)
+        for j in range(idx + 1, len(events)):
+            next_line, next_level, _next_text, next_in_resource = events[j]
+            if not next_in_resource or next_level <= level:
+                end = j
+                break
+            _ = next_line
+        has_module = any(events[j][1] > level for j in range(idx + 1, end))
+        if not has_module:
+            out.append(Finding(
+                "resource-missing-module-heading",
+                "ERROR",
+                line_idx + 1,
+                text,
+                "Resource-list function headings should contain module headings before checklist items; avoid flattening all tasks directly under a function.",
+            ))
+    return out
+
+
 def check_long_paragraphs(lines: list[str], mask: list[bool]) -> list[Finding]:
     out: list[Finding] = []
     for i, line in enumerate(lines):
@@ -323,10 +448,47 @@ def check_visuals(lines: list[str], mask: list[bool]) -> list[Finding]:
     return out
 
 
+def has_ux_source(md: str, lines: list[str]) -> bool:
+    header = "\n".join(lines[:30]).lower()
+    source_markers = (
+        "ux / ui source", "ux source", "ui source", "ux design", "ui design",
+        "figma", "prototype", "demo", "ux 设计案", "ui 设计案"
+    )
+    return any(marker in header for marker in source_markers) or any(
+        marker in md.lower() for marker in ("figma.com", "prototype", "demo")
+    )
+
+
+def is_complete_spec(lines: list[str]) -> bool:
+    header = "\n".join(lines[:30]).lower()
+    return any(token in header for token in (
+        "完整案", "complete spec", "final spec", "developer-facing", "implementation spec"
+    ))
+
+
+def check_complete_spec_ux_visual(lines: list[str], md: str) -> list[Finding]:
+    if not is_complete_spec(lines) or not has_ux_source(md, lines):
+        return []
+    if re.search(r"(<img\b|!\[[^\]]*\]\([^)]+\))", md, re.IGNORECASE):
+        return []
+    allowed_handoff = (
+        "media manifest", "media-manifest", "visual handoff", "image handoff",
+        "screenshot handoff", "待补图", "无法取图", "permission", "unavailable",
+        "needs-followup", "tbd"
+    )
+    if any(token in md.lower() for token in allowed_handoff):
+        return []
+    return [Finding(
+        "complete-spec-no-ux-visual",
+        "ERROR",
+        1,
+        "",
+        "A complete spec with UX/UI/demo source should include real screenshots near the relevant rules, or a media handoff/manifest explaining the blocker.",
+    )]
+
+
 def check_complete_spec_low_fi(lines: list[str], mask: list[bool], md: str) -> list[Finding]:
-    header = "\n".join(lines[:20]).lower()
-    is_complete = any(token in header for token in ("完整案", "complete spec", "final spec", "developer-facing", "implementation spec"))
-    if not is_complete or not LOW_FIDELITY_UI_RE.search(md):
+    if not is_complete_spec(lines) or not LOW_FIDELITY_UI_RE.search(md):
         return []
     for i, line in enumerate(lines):
         if not mask[i] and LOW_FIDELITY_UI_RE.search(line):
@@ -338,6 +500,24 @@ def check_complete_spec_low_fi(lines: list[str], mask: list[bool], md: str) -> l
                 "Complete specs should use real UX/UI/demo evidence; keep low-fidelity UI sketches only with an explicit non-ui-diagram exception.",
             )]
     return []
+
+
+def check_rendered_heading_numbers(lines: list[str], require_numbered_headings: bool) -> list[Finding]:
+    if not require_numbered_headings:
+        return []
+    out: list[Finding] = []
+    for line_idx, level, text, in_resource in rendered_heading_events(lines):
+        if in_resource or level < 3 or not text:
+            continue
+        if not re.match(r"^\d+(?:\.\d+)*[.、]?\s+\S", text):
+            out.append(Finding(
+                "rendered-heading-missing-number",
+                "ERROR",
+                line_idx + 1,
+                text,
+                "Rendered h3/h4 feature headings are missing numbering; rerun the publishing adapter or fix the rendered outline.",
+            ))
+    return out
 
 
 def check_nonhuman_terms(lines: list[str], mask: list[bool]) -> list[Finding]:
@@ -383,19 +563,24 @@ def check_bold_headings(lines: list[str], mask: list[bool]) -> list[Finding]:
     return out
 
 
-def run_checks(md: str) -> list[Finding]:
+def run_checks(md: str, rendered: bool = False, require_numbered_headings: bool = False) -> list[Finding]:
     lines = split_lines(md)
     mask = code_fence_mask(lines)
     findings: list[Finding] = []
+    findings.extend(check_document_title(lines, rendered))
     findings.extend(check_role_marker_inline(lines))
     findings.extend(check_header_metadata(lines, mask))
     findings.extend(check_facet_labels(lines, mask))
     findings.extend(check_internal_anchors(lines, mask))
     findings.extend(check_color(lines, mask))
     findings.extend(check_resource_headings(lines))
+    findings.extend(check_resource_missing_modules(lines, rendered))
     findings.extend(check_long_paragraphs(lines, mask))
     findings.extend(check_visuals(lines, mask))
+    findings.extend(check_complete_spec_ux_visual(lines, md))
     findings.extend(check_complete_spec_low_fi(lines, mask, md))
+    if rendered:
+        findings.extend(check_rendered_heading_numbers(lines, require_numbered_headings))
     findings.extend(check_nonhuman_terms(lines, mask))
     findings.extend(check_bold_headings(lines, mask))
     return sorted(findings, key=lambda f: (f.line, f.severity, f.rule))
@@ -412,9 +597,19 @@ def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("path")
     parser.add_argument("--strict", action="store_true", help="Treat WARN findings as failures.")
+    parser.add_argument("--rendered", action="store_true", help="Validate an exported/published Markdown/HTML/XML artifact.")
+    parser.add_argument(
+        "--require-numbered-headings",
+        action="store_true",
+        help="In --rendered mode, require h3/h4 feature headings to have generated numeric prefixes.",
+    )
     args = parser.parse_args(argv)
 
-    findings = run_checks(read_input(args.path))
+    findings = run_checks(
+        read_input(args.path),
+        rendered=args.rendered,
+        require_numbered_headings=args.require_numbered_headings,
+    )
     for f in findings:
         print(f"{f.severity} {f.rule} line {f.line}: {f.message}")
         print(f"  {f.snippet}")

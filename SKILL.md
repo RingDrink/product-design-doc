@@ -21,7 +21,7 @@ Do not assume the user has any specific agent framework, project memory system, 
 3. If the doc needs UX/Figma/demo/UI evidence, load `references/visuals-and-ux-evidence.md` before writing.
 4. If the task involves publishing, project memory, Figma tools, or a team-specific workflow, load `references/adapters.md` and select only the relevant adapter.
 5. For structure, style, and formatting rules, use `references/structure-conventions.md`.
-6. Before delivery, run `python3 scripts/structure_lint.py <draft.md>` when a Markdown draft exists.
+6. Before delivery, run `python3 scripts/structure_lint.py <draft.md>` when a Markdown draft exists. If the doc is exported/published through an adapter, also run `python3 scripts/structure_lint.py --rendered <exported.md|html|xml>` on the exported/published artifact; add `--require-numbered-headings` only when that adapter promises generated feature-heading numbers.
 
 ## Core Workflow
 
@@ -36,7 +36,7 @@ Always do these steps unless the user explicitly asks for a narrow edit:
 3. **Ask before inventing**: if a required decision is missing, ask the highest-leverage question. If asking is impossible or the user asked to proceed, mark the field as `TBD` / `待确认` and add it to the follow-up list.
 4. **Write for human readers**: business/product/gameplay headings, short paragraphs, bullets, tables, and visuals. Internal execution labels are planning aids, not visible section names.
 5. **Use visuals by default**: early drafts use diagrams, references, sketches, screenshots, or competitor examples; complete specs use UX/UI/demo screenshots first.
-6. **Validate and hand off**: run lint, fix ERRORs, handle WARNs or explain them, and leave a continuation checkpoint if work is incomplete.
+6. **Validate and hand off**: run source lint and, when publishing/exporting, rendered lint; fix ERRORs, handle WARNs or explain them, and leave a continuation checkpoint if work is incomplete.
 
 ## Output Contract
 
@@ -67,5 +67,6 @@ Load only what the task needs:
 - Visible headings use business/product terms, not fixed internal facets like "规则与反馈" or "系统响应".
 - Complete specs with UX/UI/demo sources use real UX evidence instead of leftover low-fidelity UI SVGs.
 - Visuals have source, insertion point, short alt text, and a nearby caption explaining what the reader should see.
-- `python3 scripts/structure_lint.py <draft.md>` has no ERRORs; WARNs are fixed or called out.
+- Source lint has no ERRORs: `python3 scripts/structure_lint.py <draft.md>`. WARNs are fixed or called out.
+- If a publishing/export adapter is used, rendered lint has no ERRORs: `python3 scripts/structure_lint.py --rendered <exported.md|html|xml>`. Use `--require-numbered-headings` only for adapters that are expected to generate numbered feature headings.
 - If work is incomplete or may be interrupted, `handoff.md` or the final response states current state, next steps, unresolved decisions, and where the draft/media live.

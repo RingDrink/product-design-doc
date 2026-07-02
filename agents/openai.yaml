@@ -1,0 +1,3 @@
+interface:
+  display_name: "Product Design Doc"
+  short_description: "Portable design-doc workflow with optional adapters"

@@ -74,31 +74,30 @@ Use structure based on content weight:
 - Image alt text should be short; long descriptions belong in the caption or media manifest.
 - A visual that does not answer a reader question should be removed.
 
-## 6. Resource List
+## 6. Resource List (Task Breakdown Table)
 
-Use a resource list when the document must hand off work across functions.
+> Format source: yifeng's resource-demand breakdown table (2026-07-21, F1 design group). When his canonical write-up lands in the shared skill catalog, converge this section on it.
+
+Use a resource list when the document must hand off work across functions. One row = one dispatchable task ticket.
 
 ```markdown
 ### Resource List
 
-#### Engineering
-##### Purchase Flow
-- [ ] Server-side validation for price, inventory space, and stock <text color="red">P0</text>
-- [ ] Failure reasons mapped to client copy <text color="orange">P1</text>
-
-#### UX / UI
-##### Purchase Panel
-- [ ] Default, insufficient funds, full inventory, and success states <text color="red">P0</text>
+| Task Type | Task Name | Owner | Priority |
+|---|---|---|---|
+| Feature | Vault door: interactive detonator box (install / arm / interrupt) | Engineering | <text color="red">P0</text> |
+| Asset | Vault door: detonator box model | Model – Su Mo | <text color="red">P0</text> |
+| Asset | Vault door: detonator install interaction animation | Animation | <text color="orange">P1</text> |
 ```
 
 Rules:
 
-- Use one function heading once, then group modules below it.
-- A function heading must contain at least one module heading before checklist items. Do not flatten all tasks directly under `Engineering`, `UX / UI`, `Audio`, etc.
-- One checklist item equals one deliverable.
-- Do not use a table for the resource list.
-- Within the resource-list section, do not insert blank lines before every module heading. Only insert one blank line before the second and later function headings.
-- If a whole interface is one UX deliverable, bundle it as a surface and list key states below it instead of atomizing every tiny widget.
+- **Task Type** aligns with the team's ticket-system categories (e.g. feature task / asset task / audio task).
+- **Task Name** uses `object/component: concrete deliverable or behavior`. One row equals one deliverable; the name must be readable standalone. Split rows instead of joining deliverables with `+` or `;`.
+- **Owner**: function plus person when known; function only when unassigned (PM assigns later). Cluster rows of the same function together, ordered by priority within the function.
+- **Priority**: P0 / P1 / P2 with the shared color markup when the publishing adapter renders inline colors in table cells; plain text otherwise.
+- If a whole interface is one UX deliverable, bundle it as one surface task instead of atomizing every tiny widget. Engineering tasks still split by capability, configuration, interface, and data flow.
+- The legacy checklist layout (function heading → module heading → checklist) is deprecated; keep it only when editing old documents. The `resource-*` lint rules apply to the legacy layout only and do not fire on the table layout.
 
 ## 7. Complete Spec With UX Evidence
 
@@ -140,8 +139,8 @@ The linter checks:
 - Visible planning-facet labels.
 - Internal anchors / local paths leaking into reader docs.
 - `grey/gray` color usage.
-- Duplicate resource-list function headings.
-- Resource-list function headings without module headings.
+- Duplicate resource-list function headings (legacy checklist layout only).
+- Resource-list function headings without module headings (legacy checklist layout only).
 - Long paragraphs, missing visual captions, long image alt, bold headings, dense resource items.
 - Complete specs with UX/UI/demo source but no screenshot or media handoff.
 - Complete specs retaining low-fidelity SVG/whiteboard-style UI sketches.

@@ -19,7 +19,7 @@ Do not assume the user has any specific agent framework, project memory system, 
 1. If the user wants to "ask first", "grill", "clarify", "pressure test", or the design is still ambiguous, use `references/grill-before-writing.md`.
 2. If the user wants a draft or complete doc, read current context first, then follow `references/core-workflow.md`.
 3. If the doc needs UX/Figma/demo/UI evidence, load `references/visuals-and-ux-evidence.md` before writing.
-4. If the task involves publishing, project memory, Figma tools, or a team-specific workflow, load `references/adapters.md` and select only the relevant adapter.
+4. If the task involves publishing, project memory, Figma tools, or a team-specific workflow (e.g. a Project F1 design doc, which must pull the shared design context), load `references/adapters.md` and select only the relevant adapter.
 5. For structure, style, and formatting rules, use `references/structure-conventions.md`.
 6. Before delivery, run `python3 scripts/structure_lint.py <draft.md>` when a Markdown draft exists. If the doc is exported/published through an adapter, also run `python3 scripts/structure_lint.py --rendered <exported.md|html|xml>` on the exported/published artifact; add `--require-numbered-headings` only when that adapter promises generated feature-heading numbers.
 

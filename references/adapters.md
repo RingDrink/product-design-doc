@@ -77,3 +77,14 @@ If the runtime has token, time, quota, or context limits:
 - Checkpoint before stopping.
 
 Use the project's existing handoff if present. Otherwise create `handoff.md` beside the draft.
+
+## 7. F1 Shared Design Context Adapter (Lilith / Project F1)
+
+When the task is a Project F1 design doc, pull the producer-maintained shared references before writing:
+
+- Source page: 《香槟的共享 Skill》 `https://lilithgames.feishu.cn/wiki/K9xAwDcOUiCxMFkAJmMcXowJnoc`
+- References under 附属Skill: **F1 StoryDesign** (design-judgment baseline: story generation, sandboxization, theme boundary) and **F1 Product Gameplay Design Index** (product context index: formed directions, active designs, maturity labels).
+- Fetch the page with `lark-cli docs +fetch`, locate the attachment tokens, download the latest with `lark-cli docs +media-download`. If the refresh is unavailable, use the most recent local copy and state that it may be stale; do not block writing on a failed refresh.
+- Treat both as read-only upstream. Maturity labels decide constraint strength: formed directions constrain the design; seed / in-progress entries are references only.
+- Conclusions produced in a design run are proposals. Never write back to the shared page or its attachments; only the catalog owner (徐昌斌 / 香槟) reviews and publishes.
+- On conflict with local project knowledge or the user's current instruction, surface the conflict explicitly instead of silently merging.

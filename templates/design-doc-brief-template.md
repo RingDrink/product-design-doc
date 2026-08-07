@@ -12,6 +12,28 @@ Produce a readable product/game feature design doc in Markdown.
 - Target reader:
 - Target output path or platform:
 
+## Experience Contract
+
+- Expected experience:
+- Actor and context:
+- Main action:
+- Choice or tension:
+- Risk or cost:
+- Lasting outcome:
+- Product/theme promise:
+- Primary uncertainty:
+
+## Validation Brief
+
+- Primary question:
+- Hypothesis:
+- Minimum change required:
+- Supporting scaffolding:
+- Explicitly out of scope:
+- Acceptance questions (maximum three):
+- Evidence to collect:
+- Acceptance authority:
+
 ## Inputs
 
 - Existing draft:
@@ -32,6 +54,7 @@ Produce a readable product/game feature design doc in Markdown.
 ## Writing Requirements
 
 - Follow `product-design-doc/SKILL.md`.
+- Follow `references/experience-led-validation.md`; do not specify or implement a function without mapping it to an expected-experience validation.
 - Use `references/structure-conventions.md` for headings, resource list, readable style, and lint expectations.
 - If UX/UI/demo exists, follow `references/visuals-and-ux-evidence.md`; use real UX evidence and do not keep early UI SVGs as final interface authority.
 - Do not expose internal local paths, private tracking ids, or workflow-only labels in the reader-facing doc.

@@ -14,13 +14,17 @@ Keep an internal question tree and ask only the highest-leverage unresolved ques
 
 Cover these dimensions as needed:
 
-- User/player goal and experience promise.
+- User/player goal and experience promise: what should they feel, understand, or repeatedly judge?
+- Experience contract: main action, meaningful choice/tension, risk/cost, lasting outcome, and product/theme promise.
+- Validation target: the one primary uncertainty this design or prototype must resolve.
 - Main flow: entry, steps, exit, repeat rhythm.
 - Interaction detail: what the user sees, chooses, receives, and sees in empty/error states.
 - Rules and boundaries: allowed states, blocked states, exceptions, failure handling, transitions.
 - System impact: economy, inventory, account, permissions, content, UI, backend, analytics, live ops, or other relevant systems.
 - Content and values: what must be decided, what belongs to config, what needs source verification.
 - Risk: ambiguous terms, old decisions that may be superseded, cross-system consequences, and stakeholder alignment.
+
+For implementation-bound work, stop and load `experience-led-validation.md` if the expected experience or validation target is still unclear. Do not move on by collecting a longer feature list.
 
 ## Ask Format
 
@@ -64,6 +68,7 @@ After each answer, decide where it belongs:
 Stop grilling and summarize when one is true:
 
 - Goal, main flow, interaction, experience promise, key boundaries, and open issues are clear enough to write.
+- The Experience Gate and primary validation question are clear enough to authorize a prototype or functional specification.
 - Remaining questions require code, UX, data, teammate, research, or prototype verification instead of the user's oral decision.
 - The user says to proceed.
 

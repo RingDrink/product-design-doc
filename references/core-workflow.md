@@ -34,7 +34,18 @@ If the user does not name the stage, infer it from evidence:
 - Figma/demo/UI source exists and the user wants developer-facing details -> complete spec.
 - The user asks "先问清楚" / "grill" / "pressure test" -> exploration.
 
-## 3. Clarify Before Writing
+## 3. Pass The Experience Gate
+
+For a new feature, gameplay system, prototype, or material change, load `experience-led-validation.md` before functional decomposition.
+
+- Define the expected experience and primary uncertainty first.
+- Map every implementation-bound function to at least one expected-experience validation.
+- If the experience is unclear, remain in exploration. Do not disguise a feature inventory as a settled design.
+- Run the adversarial pre-build review before implementation handoff.
+
+Do not make a universal state-boundary worksheet a substitute for experience clarity. Specify persistence, reset, ownership, and failure boundaries only when the feature actually requires them.
+
+## 4. Clarify Before Writing
 
 Use `grill-before-writing.md` when:
 
@@ -44,7 +55,7 @@ Use `grill-before-writing.md` when:
 
 Ask one high-leverage question at a time when possible. If the environment cannot support live interaction, produce a compact question list and mark blockers.
 
-## 4. Write The Doc
+## 5. Write The Doc
 
 Use this macro shape by default:
 
@@ -54,7 +65,7 @@ Use this macro shape by default:
 
 This is a shape, not a rigid template. Delete empty sections. Add domain-specific sections only when they help the reader.
 
-## 5. Handle Decisions
+## 6. Handle Decisions
 
 For every non-trivial design decision, preserve enough traceability that a teammate can later understand it:
 
@@ -68,7 +79,7 @@ For every non-trivial design decision, preserve enough traceability that a teamm
 
 If fields are missing, ask. If asking is not feasible, leave `TBD` and list it in follow-up.
 
-## 6. Resumability
+## 7. Resumability
 
 Before stopping, handing off, or when quota/context risk is visible, leave a checkpoint:
 
@@ -95,9 +106,12 @@ Before stopping, handing off, or when quota/context risk is visible, leave a che
 
 If the project has an existing handoff, task log, or memory adapter, write there. Otherwise, create a `handoff.md` next to the draft or include the same checkpoint in the final response.
 
-## 7. Review Before Delivery
+## 8. Review Before Delivery
 
 - Reader can understand the feature in the first screen without internal workflow context.
+- Expected experience, primary validation question, and feature-to-experience mapping are explicit before implementation handoff.
+- The prototype or feature has one primary validation question, no more than three acceptance questions, and a named acceptance authority.
+- The adversarial review has no hidden structural blocker.
 - Each feature point has enough action, rule, feedback, edge case, and implementation handoff detail for the document stage.
 - Complete specs do not use early low-fidelity UI sketches as final interface authority.
 - Visuals are placed near the rules they explain.

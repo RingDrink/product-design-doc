@@ -1,3 +1,4 @@
 interface:
   display_name: "Product Design Doc"
-  short_description: "Portable design-doc workflow with optional adapters"
+  short_description: "Experience-gated product and game design docs"
+  default_prompt: "Use $product-design-doc to clarify the intended experience, pressure-test the feature, and draft an implementation-ready design document."

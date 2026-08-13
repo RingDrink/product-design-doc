@@ -27,11 +27,13 @@ Use the stage to choose the right level of detail and visual strategy.
 | Early draft | Align product/gameplay direction before UX or implementation | Target experience, feature frame, main flows, boundaries, early diagrams/references |
 | UX alignment | Help UX/prototype/demo converge | Interaction assumptions, flow diagrams, areas needing UX decision |
 | Complete spec | Support actual implementation | UX-backed rules, data, edge cases, resources, acceptance, engineering handoff |
+| System spec | Define a settled change to an existing system | Decision summary, system model, operation rules, boundaries, acceptance, dispatchable tasks |
 
 If the user does not name the stage, infer it from evidence:
 
 - No stable UX/UI/demo and many open choices -> early draft or exploration.
 - Figma/demo/UI source exists and the user wants developer-facing details -> complete spec.
+- An existing resource, state, economy, inventory, progression, or service is being changed and the team needs authoritative rules -> system spec.
 - The user asks "先问清楚" / "grill" / "pressure test" -> exploration.
 
 ## 3. Pass The Experience Gate
@@ -64,6 +66,8 @@ Use this macro shape by default:
 3. **Delivery / Handoff**: resources, owners/functions, dependencies, acceptance, open decisions, and verification.
 
 This is a shape, not a rigid template. Delete empty sections. Add domain-specific sections only when they help the reader.
+
+Only for a system spec, load `concise-system-spec.md` and use its compact shape. Treat the Experience Gate, pressure test, and decision traceability as author checks; do not automatically publish them as visible sections. A settled system spec should read from current-version decision to system model to rules to boundaries to acceptance. Other document genres retain their own reader contract and structure.
 
 ## 6. Handle Decisions
 
@@ -106,7 +110,18 @@ Before stopping, handing off, or when quota/context risk is visible, leave a che
 
 If the project has an existing handoff, task log, or memory adapter, write there. Otherwise, create a `handoff.md` next to the draft or include the same checkpoint in the final response.
 
-## 8. Review Before Delivery
+## 8. Compress System Specs Before Delivery
+
+Apply this pass only to a system spec:
+
+1. Mark statements that change a decision, rule, boundary, acceptance condition, or dispatchable deliverable.
+2. Remove or collapse everything else unless it is essential evidence for stakeholder approval.
+3. Ensure each rule has one authoritative home. Overview and task lists may reference it, but must not restate it.
+4. Keep future direction only when it constrains the current version; otherwise move it to a separate follow-up.
+5. Replace repeated prose with one operation, state, comparison, or data table when that improves scanability.
+6. Preserve the source visual and presentation contract. Do not delete figures, image requests, captions, metadata quotes, heading hierarchy, indentation, intentional blank lines/separators, list nesting, table geometry, or inline colors as a side effect of compression; in system specs, audit the overview and each major operation module for adjacent visual coverage or a named visual handoff.
+
+## 9. Review Before Delivery
 
 - Reader can understand the feature in the first screen without internal workflow context.
 - Expected experience, primary validation question, and feature-to-experience mapping are explicit before implementation handoff.
@@ -115,6 +130,9 @@ If the project has an existing handoff, task log, or memory adapter, write there
 - Each feature point has enough action, rule, feedback, edge case, and implementation handoff detail for the document stage.
 - Complete specs do not use early low-fidelity UI sketches as final interface authority.
 - Visuals are placed near the rules they explain.
+- System specs put the current-version model and authoritative rules ahead of rationale, roadmap, and task breakdown. Do not use this check to reshape other document genres.
+- System specs cover relevant atomicity, capacity, ownership, lifecycle, metadata composition, migration, and feedback boundaries.
+- System-spec rewrites preserve or explicitly supersede source visuals and formatting requirements; the overview and every major operation module has visual coverage or a named handoff, and adjacent prose does not narrate the figure. The default system-spec shape is never used to silently replace an existing document's visible format conventions.
 - Source lint passes with no ERRORs: `python3 scripts/structure_lint.py <draft.md>`.
 - If a publishing/export adapter is used, rendered lint also passes with no ERRORs: `python3 scripts/structure_lint.py --rendered <exported.md|html|xml>`.
 - If that adapter is expected to generate numbered feature headings, add `--require-numbered-headings` to the rendered lint command.

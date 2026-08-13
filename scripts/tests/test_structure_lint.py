@@ -116,6 +116,23 @@ Only a link, no screenshot or media handoff.
     else:
         print("ok   resource-missing-module-heading")
 
+    numbered_figure_caption = """# Flow Spec
+
+## Core Experience
+
+![Main flow](main-flow.svg)
+
+> 图 1｜主流程。实线为本期，虚线为后续预留。
+"""
+    numbered_caption_rules = {
+        f.rule for f in sl.run_checks(numbered_figure_caption)
+    }
+    if "missing-visual-caption" in numbered_caption_rules:
+        failed += 1
+        print("FAIL numbered-figure-caption")
+    else:
+        print("ok   numbered-figure-caption")
+
     rendered_good = """<title>Merchant Trading Spec</title><h2>Feature Details</h2><h3>1. Trading Entry</h3><p>Text.</p><h4>1.1. Cost Preview</h4><ul><li>Text.</li></ul><h2>Delivery / Handoff</h2><h3>Resource List</h3><h4>Engineering</h4><h5>Purchase Flow</h5><checkbox done="false">Validate price</checkbox>"""
     rendered_bad = """<title></title><h2>Feature Details</h2><h3>Trading Entry</h3><p>Text.</p><h4>Cost Preview</h4><ul><li>Text.</li></ul><h2>Delivery / Handoff</h2><h3>Resource List</h3><h4>Engineering</h4><checkbox done="false">Validate price</checkbox>"""
     rendered_good_errors = [

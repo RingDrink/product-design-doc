@@ -1,4 +1,4 @@
 interface:
   display_name: "Product Design Doc"
-  short_description: "Experience-gated product and game design docs"
-  default_prompt: "Use $product-design-doc to clarify the intended experience, pressure-test the feature, and draft an implementation-ready design document."
+  short_description: "Jyun's authoritative product and game design-doc workflow"
+  default_prompt: "Use $product-design-doc as the writing authority, compose only necessary project adapters, preserve the source format contract, and return reusable lessons to Jyun's personal KB."

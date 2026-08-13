@@ -26,6 +26,25 @@ Design docs should use visuals when visuals reduce ambiguity. The visual strateg
 
 Rule of thumb: if prose contains three or more arrows (`A -> B -> C`) or multiple screens in one sentence, make a diagram or place a UX screenshot near the section.
 
+For a system design spec, visual coverage is checked per reader task, not per document:
+
+- one overview visual for the main flow when it spans multiple states, containers, screens, or systems;
+- one local visual for each major operation module when a visual can carry its core relationship more directly than prose;
+- an explicit visual requirement and insertion point when the final UI, screenshot, asset, or diagram is not yet available.
+
+Preserve the source document's existing images, image requests, captions, and layout requirements during rewrites. Preserve its surrounding rich-text conventions too, including caption block style, indentation, spacing, and placement. Do not interpret prose compression as permission to discard or restyle them. Divide information so the visual owns flow/state/layout and text owns exceptions/feedback/TBDs; neither should narrate the other.
+
+Before authoring each system diagram, state one reader question it must answer. Make the valid path visually continuous, place a prohibition only on the exact forbidden edge, and inspect the rendered figure without relying on its caption. If the figure can imply the opposite rule, it fails even when it looks polished.
+
+### Project F1 system-spec diagrams
+
+For Project F1 system design specs, use self-contained SVG as the default and final source format for authored flow, state, relationship, and system diagrams. Mermaid may be used only as private planning notation and must not be published as the final figure unless the user explicitly requests Mermaid.
+
+- Preserve each SVG source file beside the Markdown package under `media/`.
+- When publishing to Feishu, insert the complete SVG through `<whiteboard type="svg">...</whiteboard>` or its supported local-file expansion; do not rasterize it first unless SVG insertion is unavailable.
+- Follow the Feishu SVG parser constraints: include an `<svg>` root and `viewBox`, use `<text>` / `<tspan>` for text, keep the diagram self-contained, prefer orthogonal connectors, and avoid unsupported filters, masks, patterns, clipping, and radial gradients.
+- Export or query each inserted whiteboard as a rendered preview and visually inspect it before delivery.
+
 ## 3. Complete Spec UX Evidence
 
 Use this pipeline when UX/UI/demo exists:
@@ -86,3 +105,4 @@ Use `templates/media-manifest-template.md` or this field set:
 - Screenshot values are not silently treated as final rules.
 - Complete specs do not retain early UI SVGs as final interface evidence.
 - Uncertain mappings are labeled `needs-followup`.
+- Project F1 system-diagram sources are SVG, inserted as SVG whiteboards in Feishu, and verified through rendered preview.

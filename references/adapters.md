@@ -36,6 +36,14 @@ If no such system exists, include a portable decision block in the doc or `hando
 
 Do not force a specific knowledge-base path, file layout, or naming scheme.
 
+### Jyun personal routing
+
+For Jyun's environment, keep personal and project knowledge separate:
+
+- Unqualified `KB` means Jyun's personal library (`study`). Reflux only reusable, de-identified methods, preferences, and cross-project lessons.
+- `FF` means the FireForge project knowledge base. Store company/project facts, current decisions, internal links, and implementation state there.
+- If both are needed, write two distinct entries with different scopes; never copy company facts into the personal KB.
+
 ## 3. Publishing Adapter
 
 Default publishing target is Markdown.
@@ -81,6 +89,9 @@ Use the project's existing handoff if present. Otherwise create `handoff.md` bes
 ## 7. F1 Shared Design Context Adapter (Lilith / Project F1)
 
 When the task is a Project F1 design doc, pull the producer-maintained shared references before writing:
+
+- Keep `product-design-doc` Core as the writing authority. Project F1 `design-mode` or other project capabilities may supply facts, red lines, coupling checks, output paths, source-control rules, and handoff constraints, but their templates do not replace the source document frame or this Core.
+- Do not register this personal Skill in the Project F1 team selector and do not copy its Core rules into Project F1 shared Skills. Invoke it from Jyun's personal Agent entry, then compose only the required project adapters.
 
 - Source page: 《香槟的共享 Skill》 `https://lilithgames.feishu.cn/wiki/K9xAwDcOUiCxMFkAJmMcXowJnoc`
 - References under 附属Skill: **F1 StoryDesign** (design-judgment baseline: story generation, sandboxization, theme boundary) and **F1 Product Gameplay Design Index** (product context index: formed directions, active designs, maturity labels).

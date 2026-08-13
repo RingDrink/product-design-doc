@@ -56,10 +56,11 @@ Produce a readable product/game feature design doc in Markdown.
 - Follow `product-design-doc/SKILL.md`.
 - Follow `references/experience-led-validation.md`; do not specify or implement a function without mapping it to an expected-experience validation.
 - Use `references/structure-conventions.md` for headings, resource list, readable style, and lint expectations.
+- Only when the deliverable is explicitly a system design spec, follow `references/concise-system-spec.md`; do not apply that structure to other design-doc genres. For an existing system-spec rewrite, preserve the source's visible format contract and use the compact shape as a content audit, not a replacement template.
 - If UX/UI/demo exists, follow `references/visuals-and-ux-evidence.md`; use real UX evidence and do not keep early UI SVGs as final interface authority.
 - Do not expose internal local paths, private tracking ids, or workflow-only labels in the reader-facing doc.
 - Missing facts must be asked, marked `TBD`, or listed in follow-up. Do not fabricate.
-- Resource lists must use `function heading -> module heading -> checklist`; do not put checklist items directly under a function heading.
+- Resource lists use the current table convention in `references/structure-conventions.md`; one row equals one dispatchable deliverable and must not restate the full design rule.
 - If the doc is exported/published through an adapter, run rendered lint on the exported artifact. Use `--require-numbered-headings` only when that adapter promises generated feature-heading numbers.
 
 ## Deliverables

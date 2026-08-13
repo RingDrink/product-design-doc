@@ -56,7 +56,7 @@ BANNED_COLOR_RE = re.compile(r'<text\s+color="(gray|grey)"', re.IGNORECASE)
 VISUAL_RE = re.compile(r"(<whiteboard\b|<img\b|!\[[^\]]*\]\([^)]+\))", re.IGNORECASE)
 LOW_FIDELITY_UI_RE = re.compile(r"(<whiteboard\b|<svg\b|```svg\b)", re.IGNORECASE)
 VISUAL_CAPTION_RE = re.compile(
-    r"^\s*>\s*(?:\*\*)?(?:图|截图|参考|画板|UX 图|Figure|Screenshot|Reference|Diagram)[：:]",
+    r"^\s*>\s*(?:\*\*)?(?:图|截图|参考|画板|UX 图|Figure|Screenshot|Reference|Diagram)(?:\s*\d+)?\s*[：:｜|]",
     re.IGNORECASE,
 )
 MARKDOWN_IMAGE_RE = re.compile(r"!\[([^\]]*)\]\([^)]+\)")

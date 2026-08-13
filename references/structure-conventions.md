@@ -36,6 +36,17 @@ Default order:
 
 Delete empty sections. Do not keep a template heading just because the template had it.
 
+Only for new implementation-facing system design specs, use this tighter reading order. When rewriting an existing spec, use the order as a coverage check while retaining the source heading hierarchy and formatting conventions:
+
+1. **Decision Summary**: goal, one-sentence system model, current-version scope, non-goals.
+2. **System Rules**: objects/resources, operations, states, ownership, conversion, and feedback.
+3. **Boundaries And Acceptance**: failures, capacity, persistence, migration, acceptance, and unresolved blockers.
+4. **Delivery**: dependencies and task breakdown, without repeating rule prose.
+
+Keep background and future direction subordinate inside a system spec. If they do not change a current decision, omit them or move them to a separate follow-up note. Do not apply this macro shape to gameplay concepts, narrative/quest/level/content plans, UX exploration, or validation briefs.
+
+When rewriting a system spec, preserve the source's visual and formatting contract: metadata quote, heading levels, indentation, intentional blank lines and separators, list nesting, caption block style, table structure/widths, and inline emphasis/colors. Place the main-flow figure immediately after the system model, place each module figure next to the module it explains, and keep captions focused on reading priority and authority. A compact system spec may use multiple focused figures; compactness comes from removing text that narrates those figures, not from imposing a replacement template.
+
 ## 3. Feature Point Shape
 
 Internal planning facets:
@@ -62,6 +73,9 @@ Use structure based on content weight:
 
 - Start with what the reader should understand, then define system behavior.
 - Keep paragraphs short. If a paragraph has several actions, states, or exceptions, split it into bullets or a table.
+- In a system spec, prefer decision density over completeness theater. A section earns space only when it changes understanding, implementation, acceptance, or ownership.
+- In a system spec, do not restate the same rule in overview, scope, details, acceptance, and task lists. Give it one authoritative location.
+- In a system spec, keep the opening screen scannable: the reader should reach the system model and version boundary before design history or future roadmap.
 - Use exact terms for fields, classes, config keys, states, and controls, but keep them in implementation or data sections.
 - Avoid execution-agent wording such as `cwd`, `adapter`, `reflux`, `canonical`, `outbox`, or local-only tracking ids.
 - Avoid filler phrasing such as "in addition", "in summary", "this feature aims to", "ensure a seamless experience" unless the sentence carries concrete information.

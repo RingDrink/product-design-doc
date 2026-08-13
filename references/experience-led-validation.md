@@ -69,6 +69,7 @@ Before implementation, attack the proposed design:
 4. **Removal test:** If the function is removed, does the expected experience still validate? If yes, why is it in the current experiment?
 5. **Frame check:** Is the function solving the target experience, or patching a symptom produced by an undecided higher-level structure?
 6. **Promise check:** Could the same function be placed in a different product without changing meaning? If so, identify what makes its use here specific to the product/theme.
+7. **Separation check (system specs only):** If one value/object is split into parallel resources or states, what current risk, opportunity, ownership, consumer, or conversion constraint makes both forms worth exposing? If a free and lossless conversion creates a universal "convert immediately" optimum, record that honestly and challenge any management step presented as choice.
 
 Record blockers, required revisions, and residual risks. Do not turn this into a mandatory post-playtest classification system; final acceptance and design judgment remain with the user/product owner.
 

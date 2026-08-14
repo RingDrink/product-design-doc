@@ -1,6 +1,6 @@
 ---
 name: product-design-doc
-description: "Jyun 个人维护的通用产品 / 游戏策划案写作上位工作流。MUST USE when Jyun wants to write, rewrite, review, or clarify any product design doc, feature spec, gameplay/system proposal, prototype validation plan, implementation-readiness decision, UX-backed complete spec, or asks to grill/ask questions before writing—including inside Project F1. This personal Core owns document genre, reasoning, structure, visuals, formatting preservation, and writing quality; project Skills and tools may supply facts or publishing adapters but must not replace it."
+description: "通用产品 / 游戏策划案写作上位工作流。MUST USE when the user wants to write, rewrite, review, or clarify any product design doc, feature spec, gameplay/system proposal, prototype validation plan, implementation-readiness decision, UX-backed complete spec, or asks to grill/ask questions before writing. This Core owns document genre, reasoning, structure, visuals, formatting preservation, and writing quality; project Skills and tools may supply facts or publishing adapters but must not replace it."
 ---
 
 # Product Design Doc
@@ -14,15 +14,17 @@ The skill is split into **Core** and **Adapters**:
 
 Do not assume the user has any specific agent framework, project memory system, or document platform. If an adapter is unavailable, keep working in Markdown and leave a clear handoff package.
 
-## Personal Authority
+## Authority And Distribution
 
-This repository is Jyun's personal authority for design-document writing. Whenever Jyun asks to write, rewrite, review, or clarify a design doc, load this skill even if a project harness also selects a project design capability.
+This repository is a de-identified public distribution of the maintainer's personal design-doc skill. Rules flow one way: personal skill → release into this repo. Propose changes to the maintainer instead of landing new rules here.
+
+When you adopt this skill as your writing workflow:
 
 - This Core owns document genre, reasoning gates, structure, source-format preservation, visual/text division, compression, and writing quality.
 - Project capabilities may provide project facts, terminology, coupling evidence, paths, source-control constraints, publishing tools, and platform-specific checks.
 - A project template or project design Skill must not replace this Core's document frame or silently override the source document's format contract.
 - If a project procedure conflicts with this Core on writing method or presentation, follow this Core and use the project procedure only for its adapter responsibilities. Surface any unavoidable hard-policy conflict instead of silently merging the two.
-- Do not register this personal Skill in a team's shared selector or copy its Core into a team Skill merely to make it routable. Personal Agent entry instructions invoke it above the project harness.
+- Prefer invoking it from your personal agent entry above the project harness, rather than registering it into a team's shared selector.
 
 ## Route
 
@@ -56,10 +58,8 @@ Always do these steps unless the user explicitly asks for a narrow edit:
 
 ## Knowledge Return
 
-- When Jyun says `KB` without a qualifier, it means his personal library. Preserve project names, internal rules, links, and concrete decisions when they are needed to keep the conclusion accurate; de-identification is optional, never a reason to distort the reasoning.
-- When Jyun says `FF`, it means the FireForge project knowledge base. Use it for team-facing current project facts, decisions, links, and implementation state.
-- `KB` and `FF` are routing terms, not mutually exclusive content-security tiers. A stable personal lesson may cite the concrete project evidence that produced it; do not duplicate material mechanically when one destination is sufficient.
-- A project-local knowledge adapter must never reinterpret unqualified `KB` as project knowledge. Normal credential, privacy, and authorization boundaries still apply in both destinations.
+- Meaningful decisions should not live only in chat: write them to the project's decision log, wiki, or knowledge base per the Project Memory Adapter (`references/adapters.md §2`).
+- Keep personal-library and project-knowledge destinations distinct when the environment has both; never silently reroute one to the other. Normal credential, privacy, and authorization boundaries apply in every destination.
 
 ## Output Contract
 

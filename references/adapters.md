@@ -36,14 +36,7 @@ If no such system exists, include a portable decision block in the doc or `hando
 
 Do not force a specific knowledge-base path, file layout, or naming scheme.
 
-### Jyun personal routing
-
-For Jyun's environment, route personal and project knowledge by the destination he names:
-
-- Unqualified `KB` means Jyun's personal library (`study`). It may preserve project names, internal rules, links, and concrete decisions when they make the reasoning more accurate; do not force de-identification that weakens or distorts the conclusion.
-- `FF` means the FireForge project knowledge base. Store team-facing current project facts, decisions, internal links, and implementation state there.
-- `KB` and `FF` are destination defaults, not mutually exclusive content tiers. If both are useful, give each entry a clear purpose and avoid mechanical duplication.
-- Normal credential, privacy, and authorization rules still apply; allowing concrete project evidence in the personal KB is not permission to expose secrets or unrelated personal data.
+If the user distinguishes a personal library from a project knowledge base, route each conclusion to the destination they name; never silently reinterpret one as the other. Normal credential, privacy, and authorization rules apply in every destination.
 
 ## 3. Publishing Adapter
 
@@ -91,8 +84,8 @@ Use the project's existing handoff if present. Otherwise create `handoff.md` bes
 
 When the task is a Project F1 design doc, pull the producer-maintained shared references before writing:
 
-- Keep `product-design-doc` Core as the writing authority. Project F1 `design-mode` or other project capabilities may supply facts, red lines, coupling checks, output paths, source-control rules, and handoff constraints, but their templates do not replace the source document frame or this Core.
-- Do not register this personal Skill in the Project F1 team selector and do not copy its Core rules into Project F1 shared Skills. Invoke it from Jyun's personal Agent entry, then compose only the required project adapters.
+- Keep this skill's Core as the writing authority. Project F1 `design-mode` or other project capabilities may supply facts, red lines, coupling checks, output paths, source-control rules, and handoff constraints, but their templates do not replace the source document frame or this Core.
+- Do not register this Skill in the Project F1 team selector and do not copy its Core rules into Project F1 shared Skills. Invoke it from your personal agent entry, then compose only the required project adapters.
 
 - Source page: 《香槟的共享 Skill》 `https://lilithgames.feishu.cn/wiki/K9xAwDcOUiCxMFkAJmMcXowJnoc`
 - References under 附属Skill: **F1 StoryDesign** (design-judgment baseline: story generation, sandboxization, theme boundary) and **F1 Product Gameplay Design Index** (product context index: formed directions, active designs, maturity labels).

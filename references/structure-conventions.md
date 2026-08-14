@@ -78,6 +78,8 @@ Use structure based on content weight:
 
 - Start with what the reader should understand, then define system behavior.
 - Keep paragraphs short. If a paragraph has several actions, states, or exceptions, split it into bullets or a table.
+- Inline enumerations of three or more parallel items (especially colon-introduced lists) become a bullet list; five or more items, or multi-dimensional enumerations, prefer a `dimension × value` table over a long sentence or a packed cell.
+- Every prose section should visually mark its key terms at least once: bold for terms and decisions, inline code for fields/values/controls/states, semantic color for risk or tier when the platform supports it. A section with no emphasis formatting at all is a readability defect, not restraint.
 - In a system spec, prefer decision density over completeness theater. A section earns space only when it changes understanding, implementation, acceptance, or ownership.
 - In a system spec, do not restate the same rule in overview, scope, details, acceptance, and task lists. Give it one authoritative location.
 - In a system spec, keep the opening screen scannable: the reader should reach the system model and version boundary before design history or future roadmap.

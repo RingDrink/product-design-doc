@@ -8,7 +8,7 @@ It turns a vague feature idea, design discussion, UX source, or existing draft i
 
 Copy this directory into your agent's skills folder (e.g. `~/.claude/skills/`, `~/.codex/skills/`, or your framework's equivalent). The entry point is [SKILL.md](SKILL.md).
 
-This Git repository is the shared authority for Codex, Claude, and OpenClaw installations. Runtime copies or junctions are derived installs; update the repository first, then pull or relink it instead of maintaining divergent skill text per runtime.
+This repository is a de-identified public distribution, periodically cut from the maintainer's personal design-doc skill. Rule changes flow one way: personal skill → release into this repo. Do not treat this repo as a rule sink; send improvement suggestions to the maintainer (RingDrink / Jyun), who lands them upstream first. Runtime copies or junctions are derived installs; update from this repository instead of maintaining divergent skill text per runtime.
 
 ## Contents
 

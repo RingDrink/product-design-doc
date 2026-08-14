@@ -1,4 +1,4 @@
 interface:
   display_name: "Product Design Doc"
-  short_description: "Jyun's authoritative product and game design-doc workflow"
-  default_prompt: "Use $product-design-doc as the writing authority, compose only necessary project adapters, preserve the source format contract, and return reusable lessons to Jyun's personal KB."
+  short_description: "Authoritative product and game design-doc workflow"
+  default_prompt: "Use $product-design-doc as the writing authority, compose only necessary project adapters, preserve the source format contract, and return reusable lessons to your knowledge base per the project-memory adapter."

@@ -32,7 +32,7 @@ For a system design spec, visual coverage is checked per reader task, not per do
 - one local visual for each major operation module when a visual can carry its core relationship more directly than prose;
 - an explicit visual requirement and insertion point when the final UI, screenshot, asset, or diagram is not yet available.
 
-Preserve the source document's existing images, image requests, captions, and layout requirements during rewrites. Preserve its surrounding rich-text conventions too, including caption block style, indentation, spacing, and placement. Do not interpret prose compression as permission to discard or restyle them. Divide information so the visual owns flow/state/layout and text owns exceptions/feedback/TBDs; neither should narrate the other.
+Preserve the source document's existing images, image requests, captions, and layout requirements during rewrites. Preserve its surrounding rich-text conventions too, including caption block style, indentation, spacing, and placement. Do not interpret prose compression as permission to discard or restyle them. Divide information so the visual owns flow/state/layout and text owns confirmed exceptions and feedback; neither should narrate the other. Keep unresolved visual decisions in the media handoff, not in an implementation-ready requirement.
 
 Before authoring each system diagram, state one reader question it must answer. Make the valid path visually continuous, place a prohibition only on the exact forbidden edge, and inspect the rendered figure without relying on its caption. If the figure can imply the opposite rule, it fails even when it looks polished.
 

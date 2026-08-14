@@ -32,18 +32,23 @@ Default order:
 
 1. **Core Experience / Overview**: what this is, why it exists, target experience, version boundary.
 2. **Feature Details**: modules, flows, rules, feedback, data, configuration, edge cases.
-3. **Delivery / Handoff**: resources, dependencies, acceptance, open decisions, verification.
+3. **Acceptance Criteria / 验收口径**: concise programmer self-check checkboxes derived from the settled rules.
+4. **Delivery / Handoff**: resources and dependencies when needed.
 
 Delete empty sections. Do not keep a template heading just because the template had it.
 
 Only for new implementation-facing system design specs, use this tighter reading order. When rewriting an existing spec, use the order as a coverage check while retaining the source heading hierarchy and formatting conventions:
 
 1. **Decision Summary**: goal, one-sentence system model, current-version scope, non-goals.
-2. **System Rules**: objects/resources, operations, states, ownership, conversion, and feedback.
-3. **Boundaries And Acceptance**: failures, capacity, persistence, migration, acceptance, and unresolved blockers.
+2. **System Rules**: objects/resources, operations, states, ownership, conversion, feedback, and the relevant boundary / cross-system effect beside each rule.
+3. **验收口径**: concise programmer self-check checkboxes for the main path and key boundaries.
 4. **Delivery**: dependencies and task breakdown, without repeating rule prose.
 
 Keep background and future direction subordinate inside a system spec. If they do not change a current decision, omit them or move them to a separate follow-up note. Do not apply this macro shape to gameplay concepts, narrative/quest/level/content plans, UX exploration, or validation briefs.
+
+An implementation-ready requirement contains only conclusions. Resolve product, gameplay, UX, value, priority, and boundary decisions before publication. Keep unresolved questions in conversation, working notes, or `handoff.md`, never in a visible “冻结决策与待确认项”, `TBD`, `待确认`, “开放问题”, or equivalent section.
+
+Do not add a default “关联系统与边界” section or coupling matrix. Put a dependency, ownership constraint, conflict rule, or system effect beside the functional rule it changes. Use a standalone relationship section only when the relationship itself is the reader's main problem and local notes would make the rule path harder to follow.
 
 When rewriting a system spec, preserve the source's visual and formatting contract: metadata quote, heading levels, indentation, intentional blank lines and separators, list nesting, caption block style, table structure/widths, and inline emphasis/colors. Place the main-flow figure immediately after the system model, place each module figure next to the module it explains, and keep captions focused on reading priority and authority. A compact system spec may use multiple focused figures; compactness comes from removing text that narrates those figures, not from imposing a replacement template.
 
@@ -88,7 +93,27 @@ Use structure based on content weight:
 - Image alt text should be short; long descriptions belong in the caption or media manifest.
 - A visual that does not answer a reader question should be removed.
 
-## 6. Resource List (Task Breakdown Table)
+## 6. Developer Self-Check Checklist
+
+Every implementation-ready requirement has one visible `验收口径` section (or the source document's established equivalent). Its primary reader is the programmer completing the work.
+
+```markdown
+## 验收口径
+
+- [ ] 给定账号已满足二档条件，完成一次升档结算后，商人档位变为二档，并解锁正文规定的二档商品。
+- [ ] 给定仓库空间不足，确认购买后不扣除货币、不发放商品，并显示正文规定的失败反馈。
+```
+
+Rules:
+
+- Use Markdown checkboxes. One item = one self-contained condition/action plus one observable result.
+- Cover the main path and only the key failure, capacity, persistence, or rollback boundaries that the programmer can verify locally.
+- Keep each item concise and traceable to one authoritative rule in the body; do not rewrite the rule explanation inside the checklist.
+- Do not turn the section into an exhaustive QA test matrix, playtest plan, analytics plan, task list, or subjective experience acceptance.
+- Do not include owners, priorities, test-case ids, setup narration, open decisions, or `TBD`.
+- Subjective experience validation remains in the prototype / playtest brief and is accepted by the named design authority, not by this programmer checklist.
+
+## 7. Resource List (Task Breakdown Table)
 
 > Format source: yifeng's resource-demand breakdown table (2026-07-21, F1 design group). When his canonical write-up lands in the shared skill catalog, converge this section on it.
 
@@ -113,17 +138,17 @@ Rules:
 - If a whole interface is one UX deliverable, bundle it as one surface task instead of atomizing every tiny widget. Engineering tasks still split by capability, configuration, interface, and data flow.
 - The legacy checklist layout (function heading → module heading → checklist) is deprecated; keep it only when editing old documents. The `resource-*` lint rules apply to the legacy layout only and do not fire on the table layout.
 
-## 7. Complete Spec With UX Evidence
+## 8. Complete Spec With UX Evidence
 
 When UX/UI/demo exists:
 
 - Use UX/UI/demo screenshots as interface authority.
 - A complete spec with a UX/UI/demo source must include real screenshots near the relevant rules, or an explicit media handoff/manifest explaining why screenshots could not be inserted.
 - Do not keep early low-fidelity UI sketches as if they were final interface evidence.
-- State whether values seen in screenshots are formal configuration, placeholder/demo values, TBD, or not relevant.
+- Resolve whether values seen in screenshots are formal configuration, placeholder/demo values, or not relevant before publishing an implementation-ready requirement. Keep unresolved value questions outside the requirement.
 - If UX shows a reusable component, write the component's reuse scope, close/stacking rules, limits, and ownership boundary.
 
-## 8. Automated Checks
+## 9. Automated Checks
 
 `scripts/structure_lint.py` covers the mechanical subset.
 
@@ -131,6 +156,12 @@ Use the source gate before handoff:
 
 ```bash
 python3 scripts/structure_lint.py <draft.md>
+```
+
+For an implementation-ready requirement, use the stronger gate:
+
+```bash
+python3 scripts/structure_lint.py --implementation-ready <draft.md>
 ```
 
 If the document is exported or published through a platform adapter, run the rendered gate on the exported/published artifact:
@@ -158,6 +189,9 @@ The linter checks:
 - Long paragraphs, missing visual captions, long image alt, bold headings, dense resource items.
 - Complete specs with UX/UI/demo source but no screenshot or media handoff.
 - Complete specs retaining low-fidelity SVG/whiteboard-style UI sketches.
+- Implementation-ready requirements with unresolved-decision headings or `TBD` / `待确认` markers.
+- Implementation-ready requirements missing a checkbox-based `验收口径` section.
+- Standalone “关联系统与边界” sections that should normally be folded into the affected functional rules.
 - Rendered h3/h4 missing generated heading numbers when `--require-numbered-headings` is enabled.
 
 Lint is a floor, not a substitute for judgment.

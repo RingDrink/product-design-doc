@@ -26,8 +26,8 @@ Use the stage to choose the right level of detail and visual strategy.
 | Exploration / decision alignment | Find the design frame and key trade-offs | Question summary, decision record, open questions |
 | Early draft | Align product/gameplay direction before UX or implementation | Target experience, feature frame, main flows, boundaries, early diagrams/references |
 | UX alignment | Help UX/prototype/demo converge | Interaction assumptions, flow diagrams, areas needing UX decision |
-| Complete spec | Support actual implementation | UX-backed rules, data, edge cases, resources, acceptance, engineering handoff |
-| System spec | Define a settled change to an existing system | Decision summary, system model, operation rules, boundaries, acceptance, dispatchable tasks |
+| Complete spec | Support actual implementation | UX-backed rules, data, edge cases, resources, developer self-check, engineering handoff |
+| System spec | Define a settled change to an existing system | Decision summary, system model, operation rules with local boundaries, developer self-check, dispatchable tasks |
 
 If the user does not name the stage, infer it from evidence:
 
@@ -55,7 +55,7 @@ Use `grill-before-writing.md` when:
 - Several valid design directions exist and choosing one affects structure.
 - The user gave a meeting conclusion without enough traceable fields.
 
-Ask one high-leverage question at a time when possible. If the environment cannot support live interaction, produce a compact question list and mark blockers.
+Ask one high-leverage question at a time when possible. Do not begin an implementation-ready requirement until its product decisions have answers. If the environment cannot support live interaction, produce a compact question list or handoff and stop at decision alignment.
 
 ## 5. Write The Doc
 
@@ -63,25 +63,28 @@ Use this macro shape by default:
 
 1. **Overview / Core Experience**: what this feature is, why it exists, the target experience, and the version boundary.
 2. **Feature Details**: the functional modules, player/user actions, system rules, feedback, data, edge cases, and configuration.
-3. **Delivery / Handoff**: resources, owners/functions, dependencies, acceptance, open decisions, and verification.
+3. **Developer Self-Check**: a concise `验收口径` checklist that lets the programmer verify the implementation against the settled rules.
+4. **Delivery / Handoff**: resources, owners/functions, and dependencies when they are actually needed.
 
 This is a shape, not a rigid template. Delete empty sections. Add domain-specific sections only when they help the reader.
 
-Only for a system spec, load `concise-system-spec.md` and use its compact shape. Treat the Experience Gate, pressure test, and decision traceability as author checks; do not automatically publish them as visible sections. A settled system spec should read from current-version decision to system model to rules to boundaries to acceptance. Other document genres retain their own reader contract and structure.
+Only for a system spec, load `concise-system-spec.md` and use its compact shape. Treat the Experience Gate, pressure test, decision traceability, and coupling analysis as author checks; do not automatically publish them as visible sections. A settled system spec should read from current-version decision to system model to functional rules (with their boundaries and system effects inline) to developer self-check. Other document genres retain their own reader contract and structure.
 
 ## 6. Handle Decisions
 
-For every non-trivial design decision, preserve enough traceability that a teammate can later understand it:
+For every non-trivial design decision, preserve enough internal traceability that the author can verify it:
 
 - Source: who/what established it.
 - Context: what problem it solves.
 - Decision: the normalized conclusion.
 - Alternatives: meaningful options considered, if known.
 - Scope: feature/system/version affected.
-- Status: proposed / accepted / superseded / TBD.
+- Status: proposed / accepted / superseded.
 - Follow-up: what would reopen or verify it.
 
-If fields are missing, ask. If asking is not feasible, leave `TBD` and list it in follow-up.
+This record belongs in working notes, conversation, or a project decision log when one exists. The reader-facing requirement publishes the normalized accepted conclusion, not the decision worksheet.
+
+If a requirement-level field is missing, ask. If asking is not feasible, keep the work in exploration and put the unresolved question in `handoff.md`; do not insert `TBD`, `待确认`, “冻结决策”, or “开放问题” into the requirement.
 
 ## 7. Resumability
 
@@ -114,12 +117,13 @@ If the project has an existing handoff, task log, or memory adapter, write there
 
 Apply this pass only to a system spec:
 
-1. Mark statements that change a decision, rule, boundary, acceptance condition, or dispatchable deliverable.
+1. Mark statements that change a decision, rule, local boundary, developer self-check condition, or dispatchable deliverable.
 2. Remove or collapse everything else unless it is essential evidence for stakeholder approval.
 3. Ensure each rule has one authoritative home. Overview and task lists may reference it, but must not restate it.
-4. Keep future direction only when it constrains the current version; otherwise move it to a separate follow-up.
+4. Keep future direction only when it constrains the current version; otherwise omit it from the requirement and retain it in backlog or handoff notes.
 5. Replace repeated prose with one operation, state, comparison, or data table when that improves scanability.
-6. Preserve the source visual and presentation contract. Do not delete figures, image requests, captions, metadata quotes, heading hierarchy, indentation, intentional blank lines/separators, list nesting, table geometry, or inline colors as a side effect of compression; in system specs, audit the overview and each major operation module for adjacent visual coverage or a named visual handoff.
+6. Put each cross-system effect and boundary beside the functional rule it changes; remove default coupling matrices and standalone “关联系统与边界” chapters unless the relationship itself is the feature.
+7. Preserve the source visual and presentation contract. Do not delete figures, image requests, captions, metadata quotes, heading hierarchy, indentation, intentional blank lines/separators, list nesting, table geometry, or inline colors as a side effect of compression; in system specs, audit the overview and each major operation module for adjacent visual coverage or a named visual handoff.
 
 ## 9. Review Before Delivery
 
@@ -128,11 +132,14 @@ Apply this pass only to a system spec:
 - The prototype or feature has one primary validation question, no more than three acceptance questions, and a named acceptance authority.
 - The adversarial review has no hidden structural blocker.
 - Each feature point has enough action, rule, feedback, edge case, and implementation handoff detail for the document stage.
+- An implementation-ready requirement contains no unresolved product decisions, `TBD`, `待确认`, frozen-decision list, or open-question section.
+- Its `验收口径` is a short programmer self-check checklist: each checkbox gives a condition/action and an observable result, with no exhaustive QA matrix or restatement of the full rules.
+- Cross-system effects and behavior boundaries are written beside the affected function instead of collected in a default standalone section.
 - Complete specs do not use early low-fidelity UI sketches as final interface authority.
 - Visuals are placed near the rules they explain.
 - System specs put the current-version model and authoritative rules ahead of rationale, roadmap, and task breakdown. Do not use this check to reshape other document genres.
-- System specs cover relevant atomicity, capacity, ownership, lifecycle, metadata composition, migration, and feedback boundaries.
+- System specs cover relevant atomicity, capacity, ownership, lifecycle, metadata composition, migration, and feedback boundaries at the functional rule where each matters.
 - System-spec rewrites preserve or explicitly supersede source visuals and formatting requirements; the overview and every major operation module has visual coverage or a named handoff, and adjacent prose does not narrate the figure. The default system-spec shape is never used to silently replace an existing document's visible format conventions.
-- Source lint passes with no ERRORs: `python3 scripts/structure_lint.py <draft.md>`.
+- Source lint passes with no ERRORs: use `python3 scripts/structure_lint.py --implementation-ready <draft.md>` for implementation-ready requirements and the base command for other genres.
 - If a publishing/export adapter is used, rendered lint also passes with no ERRORs: `python3 scripts/structure_lint.py --rendered <exported.md|html|xml>`.
 - If that adapter is expected to generate numbered feature headings, add `--require-numbered-headings` to the rendered lint command.

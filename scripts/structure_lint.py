@@ -7,6 +7,7 @@ signals. It does not judge design quality.
 Usage:
     python3 structure_lint.py [--strict] draft.md
     cat draft.md | python3 structure_lint.py [--strict] -
+    python3 structure_lint.py --implementation-ready requirement.md
     python3 structure_lint.py --rendered exported.md
     python3 structure_lint.py --rendered --require-numbered-headings exported.html
 """
@@ -70,6 +71,21 @@ NONHUMAN_TERMS = {
     "限制与例外": "use scope / failure / exception headings only when meaningful",
 }
 FILLER_WORDS = ["此外", "综上", "值得注意的是", "该功能旨在", "确保", "提供无缝体验", "发挥关键作用"]
+UNRESOLVED_HEADING_RE = re.compile(
+    r"(?:冻结决策|待确认(?:项|问题)?|开放问题|未决(?:事项|问题|决策)|"
+    r"open questions?|open decisions?|unresolved (?:questions?|decisions?|blockers?))",
+    re.IGNORECASE,
+)
+UNRESOLVED_MARKER_RE = re.compile(r"(?<![A-Za-z0-9_])(?:TBD|待确认)(?![A-Za-z0-9_])", re.IGNORECASE)
+COUPLING_HEADING_RE = re.compile(
+    r"(?:关联系统与边界|关联系统|耦合分析|system coupling|related systems and boundaries)",
+    re.IGNORECASE,
+)
+SELF_CHECK_HEADING_RE = re.compile(
+    r"(?:验收口径|开发自查|程序自查|developer self[- ]check|implementation self[- ]check)",
+    re.IGNORECASE,
+)
+CHECKBOX_RE = re.compile(r"^\s*[-*]\s+\[[ xX]\]\s+\S")
 
 
 @dataclass
@@ -563,7 +579,82 @@ def check_bold_headings(lines: list[str], mask: list[bool]) -> list[Finding]:
     return out
 
 
-def run_checks(md: str, rendered: bool = False, require_numbered_headings: bool = False) -> list[Finding]:
+def check_implementation_ready_contract(lines: list[str], mask: list[bool]) -> list[Finding]:
+    out: list[Finding] = []
+    headings = heading_events(lines)
+
+    self_check_sections = [
+        (index, line_idx, level)
+        for index, (line_idx, level, text, _in_resource) in enumerate(headings)
+        if SELF_CHECK_HEADING_RE.search(plain_text(text))
+    ]
+    if not self_check_sections:
+        out.append(Finding(
+            "implementation-ready-missing-self-check",
+            "ERROR",
+            1,
+            "",
+            "Implementation-ready requirements need a visible `验收口径` section with concise programmer self-check checkboxes.",
+        ))
+    else:
+        for event_index, line_idx, level in self_check_sections:
+            end_line = len(lines)
+            for next_line_idx, next_level, _next_text, _in_resource in headings[event_index + 1:]:
+                if next_level <= level:
+                    end_line = next_line_idx
+                    break
+            checkbox_count = sum(
+                1 for item in lines[line_idx + 1:end_line] if CHECKBOX_RE.match(item)
+            )
+            if checkbox_count == 0:
+                out.append(Finding(
+                    "implementation-ready-self-check-not-checklist",
+                    "ERROR",
+                    line_idx + 1,
+                    lines[line_idx].strip(),
+                    "`验收口径` should be a Markdown checkbox checklist for programmer self-check, not prose or a generic acceptance section.",
+                ))
+
+    for line_idx, _level, text, _in_resource in headings:
+        normalized = plain_text(text)
+        if UNRESOLVED_HEADING_RE.search(normalized):
+            out.append(Finding(
+                "implementation-ready-unresolved-heading",
+                "ERROR",
+                line_idx + 1,
+                lines[line_idx].strip(),
+                "Resolve requirement decisions before publishing; keep frozen decisions, TBDs, and open questions in conversation or handoff notes.",
+            ))
+        if COUPLING_HEADING_RE.search(normalized):
+            out.append(Finding(
+                "standalone-coupling-heading",
+                "WARN",
+                line_idx + 1,
+                lines[line_idx].strip(),
+                "Put cross-system effects and boundaries beside the functional rule they constrain; use a standalone coupling section only when the relationship itself is the feature.",
+            ))
+
+    for i, line in enumerate(lines):
+        if mask[i]:
+            continue
+        scrubbed = re.sub(r"`[^`]*`", "", line)
+        if UNRESOLVED_MARKER_RE.search(scrubbed):
+            out.append(Finding(
+                "implementation-ready-unresolved-marker",
+                "ERROR",
+                i + 1,
+                line.strip()[:120],
+                "Implementation-ready requirements contain conclusions only; resolve this marker or move the question to conversation / handoff.",
+            ))
+    return out
+
+
+def run_checks(
+    md: str,
+    rendered: bool = False,
+    require_numbered_headings: bool = False,
+    implementation_ready: bool = False,
+) -> list[Finding]:
     lines = split_lines(md)
     mask = code_fence_mask(lines)
     findings: list[Finding] = []
@@ -583,6 +674,8 @@ def run_checks(md: str, rendered: bool = False, require_numbered_headings: bool 
         findings.extend(check_rendered_heading_numbers(lines, require_numbered_headings))
     findings.extend(check_nonhuman_terms(lines, mask))
     findings.extend(check_bold_headings(lines, mask))
+    if implementation_ready:
+        findings.extend(check_implementation_ready_contract(lines, mask))
     return sorted(findings, key=lambda f: (f.line, f.severity, f.rule))
 
 
@@ -599,6 +692,11 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--strict", action="store_true", help="Treat WARN findings as failures.")
     parser.add_argument("--rendered", action="store_true", help="Validate an exported/published Markdown/HTML/XML artifact.")
     parser.add_argument(
+        "--implementation-ready",
+        action="store_true",
+        help="Require resolved conclusions, a programmer self-check checklist, and inline cross-system boundaries.",
+    )
+    parser.add_argument(
         "--require-numbered-headings",
         action="store_true",
         help="In --rendered mode, require h3/h4 feature headings to have generated numeric prefixes.",
@@ -609,6 +707,7 @@ def main(argv: list[str]) -> int:
         read_input(args.path),
         rendered=args.rendered,
         require_numbered_headings=args.require_numbered_headings,
+        implementation_ready=args.implementation_ready,
     )
     for f in findings:
         print(f"{f.severity} {f.rule} line {f.line}: {f.message}")

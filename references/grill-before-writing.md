@@ -61,15 +61,15 @@ After each answer, decide where it belongs:
 - Trade-off -> decision record.
 - Case-local conclusion -> feature details.
 - Stable system position -> system overview or dependencies.
-- Open branch -> follow-up questions or handoff.
+- Open branch -> continue asking; if it cannot be resolved now, keep it in follow-up questions or handoff rather than the requirement.
 
 ## Stop Conditions
 
 Stop grilling and summarize when one is true:
 
-- Goal, main flow, interaction, experience promise, key boundaries, and open issues are clear enough to write.
+- Goal, main flow, interaction, experience promise, and every requirement-level boundary are resolved well enough to state conclusions.
 - The Experience Gate and primary validation question are clear enough to authorize a prototype or functional specification.
-- Remaining questions require code, UX, data, teammate, research, or prototype verification instead of the user's oral decision.
-- The user says to proceed.
+- Remaining questions require code, UX, data, teammate, research, or prototype verification instead of the user's oral decision; stop at exploration / handoff rather than declaring an implementation-ready requirement.
+- The user says to proceed and no unresolved requirement-level decision would be hidden or invented.
 
-The summary should include confirmed positions, unresolved questions, recommended verification, target document stage, and next output.
+The working summary may include confirmed positions, unresolved questions, recommended verification, target document stage, and next output. When a formal requirement is later written, publish only the confirmed conclusions.

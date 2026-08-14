@@ -38,11 +38,12 @@ Do not force a specific knowledge-base path, file layout, or naming scheme.
 
 ### Jyun personal routing
 
-For Jyun's environment, keep personal and project knowledge separate:
+For Jyun's environment, route personal and project knowledge by the destination he names:
 
-- Unqualified `KB` means Jyun's personal library (`study`). Reflux only reusable, de-identified methods, preferences, and cross-project lessons.
-- `FF` means the FireForge project knowledge base. Store company/project facts, current decisions, internal links, and implementation state there.
-- If both are needed, write two distinct entries with different scopes; never copy company facts into the personal KB.
+- Unqualified `KB` means Jyun's personal library (`study`). It may preserve project names, internal rules, links, and concrete decisions when they make the reasoning more accurate; do not force de-identification that weakens or distorts the conclusion.
+- `FF` means the FireForge project knowledge base. Store team-facing current project facts, decisions, internal links, and implementation state there.
+- `KB` and `FF` are destination defaults, not mutually exclusive content tiers. If both are useful, give each entry a clear purpose and avoid mechanical duplication.
+- Normal credential, privacy, and authorization rules still apply; allowing concrete project evidence in the personal KB is not permission to expose secrets or unrelated personal data.
 
 ## 3. Publishing Adapter
 
@@ -71,7 +72,7 @@ Core lint is `scripts/structure_lint.py` and has no external dependency.
 
 Use two gates:
 
-- **Source gate**: `python3 scripts/structure_lint.py <draft.md>` before handoff.
+- **Source gate**: `python3 scripts/structure_lint.py --implementation-ready <draft.md>` for an implementation-ready requirement; use the base command for other document stages.
 - **Rendered gate**: `python3 scripts/structure_lint.py --rendered <exported.md|html|xml>` after a publishing/export adapter changes the artifact.
 
 Teams may add stricter local checks, but local checks should not change the meaning of Core. If a local check is about platform rendering, generated numbering, or team style, keep it in the adapter layer and document the exact command.

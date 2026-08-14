@@ -21,6 +21,7 @@ This Git repository is the shared authority for Codex, Claude, and OpenClaw inst
 
 ```bash
 python3 scripts/structure_lint.py draft.md          # ERRORs fail
+python3 scripts/structure_lint.py --implementation-ready requirement.md
 python3 scripts/structure_lint.py --strict draft.md # WARNs also fail
 python3 scripts/structure_lint.py --rendered exported.html
 ```

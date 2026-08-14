@@ -8,7 +8,7 @@ Optimize for three questions:
 
 1. What changes in the current version?
 2. What are the authoritative rules and boundaries?
-3. How do we know the implementation is correct?
+3. What should the programmer check after implementation to know it matches the requirement?
 
 Rationale, history, future direction, and task planning are supporting information. They must not interrupt the rule path.
 
@@ -19,11 +19,12 @@ Use the smallest subset that covers a new system-spec feature. For a rewrite, tr
 1. **Decision Summary** — goal, one-sentence system model, current-version scope, and explicit non-goals.
 2. **System Model** — authoritative objects/resources, ownership, states, conversions, and the main flow. Prefer a compact table or one diagram when relations are non-trivial.
 3. **Rules By Operation** — group rules under business operations such as acquire, store, convert, consume, fail, and migrate. State trigger, precondition, result, and failure feedback.
-4. **Boundaries And Exceptions** — lifecycle, persistence, concurrency/atomicity, capacity, failure/retry, migration, and cross-system ownership only where relevant.
-5. **Acceptance** — observable scenarios that prove the rules, plus unresolved decisions that block implementation.
-6. **Delivery** — dependencies and dispatchable tasks. Keep this separate from the design truth.
+4. **验收口径** — concise programmer self-check checkboxes for the main path and key boundaries.
+5. **Delivery** — dependencies and dispatchable tasks. Keep this separate from the design truth.
 
 Do not expose this list mechanically. Use domain headings such as `Cash Acquisition`, `Extraction`, `Deposit`, and `Account Spending`.
+
+Put lifecycle, persistence, concurrency/atomicity, capacity, failure/retry, migration, and cross-system ownership beside the operation they constrain. Do not create a default “关联系统与边界” chapter or coupling matrix.
 
 ## 3. Visual Coverage Contract
 
@@ -34,7 +35,7 @@ Compression removes repeated prose, not the visual contract of the source design
 - Put one authoritative overview visual immediately after the system model when the feature has a multi-stage main flow.
 - Audit every major operation module for a local visual. Use a flowchart, state split, relationship diagram, annotated screenshot, or explicit visual handoff whenever the visual can carry the action sequence, ownership change, state difference, or UI placement more directly than prose.
 - A system spec may therefore contain several focused visuals. "State each rule once" means that the visual and text divide responsibility; it does not mean reducing the document to one diagram.
-- The visual owns flow, object relationships, state transitions, and visible layout. The adjacent text owns preconditions, exceptions, failure handling, feedback, parameter status, and unresolved decisions.
+- The visual owns flow, object relationships, state transitions, and visible layout. The adjacent text owns confirmed preconditions, exceptions, failure handling, feedback, and parameter status.
 - Do not restate every node and edge in the caption or prose. Captions tell the reader what to inspect and identify whether values or future branches are authoritative, placeholder, or out of scope.
 - When the final UX does not exist, add a dispatchable visual requirement at the intended insertion point instead of silently omitting the illustration.
 - Before delivery, include a visual coverage list or media manifest that maps `overview + each major operation module` to its figure, source/owner, insertion point, authority, value status, and format requirement.
@@ -59,9 +60,9 @@ Before drawing, write the single reader question the figure must answer. Keep th
 - Do not delete source visuals, visual placeholders, captions, or formatting requirements merely to shorten the document. Replace a visual only when the replacement carries the same design responsibility more clearly.
 - Remove examples that merely repeat a general rule. Keep an example only when it fixes an ambiguous value, boundary, or calculation.
 - Keep implementation task names out of rule prose. The same noun may appear in a resource list, but the task row should name a deliverable rather than retell the design.
-- Do not publish internal reasoning artifacts such as pressure-test checklists, Experience Gate fields, discarded alternatives, or exhaustive decision records unless the reader must approve an unresolved choice.
-- Do not promote a reasonable implementation preference into a product decision. If atomicity, overflow behavior, priority, ownership, UX behavior, or a numeric value is not sourced, write `TBD` instead of choosing the safe-looking answer.
-- Preserve source status. `Confirmed`, `inferred`, `placeholder`, and `TBD` are different; never rewrite one as another to make the document look complete.
+- Do not publish internal reasoning artifacts such as pressure-test checklists, Experience Gate fields, discarded alternatives, exhaustive decision records, frozen-decision lists, or open-question sections.
+- Do not promote a reasonable implementation preference into a product decision. Ask for missing atomicity, overflow, priority, ownership, UX, or numeric decisions before publishing. If an answer cannot be obtained, keep the work in exploration / handoff instead of inserting `TBD` into the requirement.
+- Preserve source status during drafting. Before an implementation-ready requirement is published, convert accepted inputs into conclusions, identify implementation-discretion items explicitly, and keep unresolved placeholders outside the requirement.
 
 ## 5. Rule Normalization
 
@@ -71,7 +72,7 @@ Normalize prose into one of these forms:
 
 | Operation | Preconditions | System result | Failure / feedback |
 |---|---|---|---|
-| Deposit all cash | Cash exists in storage | Remove cash items and add the same amount to account balance | No cash behavior and failure/rollback semantics follow the source decision; otherwise TBD |
+| Deposit all cash | Cash exists in storage | Remove cash items and add the same amount to account balance | If no cash exists, keep both balances unchanged and show the configured no-cash feedback |
 
 ### State / Ownership Table
 
@@ -83,7 +84,7 @@ Normalize prose into one of these forms:
 
 | Field / concept | Meaning | Current-version rule | Future constraint |
 |---|---|---|---|
-| Cash amount | Stack count equals value | Integer, unit value 1 | Preserve only metadata constraints confirmed by the source; otherwise TBD |
+| Cash amount | Stack count equals value | Integer, unit value 1 | Preserve the confirmed item-instance metadata during stack merge / split |
 
 Use prose only when a table would fragment one clear statement.
 
@@ -99,9 +100,9 @@ Ask these questions, but include only relevant answers in the final document:
 - **Migration:** Are old items, saves, tables, quests, rewards, or references still present?
 - **Presentation:** What feedback is required to understand success, failure, and the resulting value?
 
-Mark missing implementation-blocking answers as `TBD`. Do not invent them.
+Ask for missing implementation-blocking answers and do not publish until they are resolved. If the answer belongs to implementation discretion rather than product design, say so in the relevant rule instead of inventing a product requirement.
 
-Do not assign task priorities or owners unless the source or user supplied them. Leave the cells `TBD`.
+Do not assign task priorities or owners unless the source or user supplied them. Omit an unconfirmed column or keep the assignment in PM / handoff notes; do not fill the requirement with `TBD`.
 
 ## 7. Parallel Resource / State Separation Audit
 
@@ -141,21 +142,23 @@ If the current version intentionally ships only a framework for later mechanics,
 
 - define the present utility and unavoidable management cost;
 - name the future constraints that today’s data/model must preserve;
-- keep undecided future mechanics `TBD` and outside the authoritative current flow;
+- omit undecided future mechanics from the requirement and keep them in backlog / handoff notes;
 - do not claim that the future trade-off already exists.
 
 ## 8. Compression Pass
 
 Before delivery:
 
-1. Highlight every present-version decision and acceptance condition.
+1. Highlight every present-version decision and developer self-check condition.
 2. Delete any paragraph that contains neither.
 3. Merge duplicate rules into one authoritative table or subsection.
 4. Collapse future direction to constraints on today's design; move everything else out of the main document.
 5. Check the first screen: a reader should see the goal, system model, and version boundary without scrolling through history.
 6. Check the final screen: delivery tasks must be traceable to rules, but must not become a second copy of the spec.
-7. Check visual coverage: the main flow and every major operation module either has an adjacent authoritative visual or an explicit visual handoff requirement.
-8. Check visual-text division: no paragraph merely narrates the nodes and arrows already visible in the adjacent figure.
-9. Compare source and target presentation: heading levels, quote blocks, blank-line rhythm, list nesting, table geometry, text colors, and captions remain intact unless an approved restyle is recorded.
+7. Check that every relevant system effect and boundary sits beside the operation it constrains; remove the default coupling / boundary chapter.
+8. Check `验收口径`: concise checkboxes, main path plus key boundaries, no QA matrix and no repeated rule explanations.
+9. Check visual coverage: the main flow and every major operation module either has an adjacent authoritative visual or an explicit visual handoff requirement.
+10. Check visual-text division: no paragraph merely narrates the nodes and arrows already visible in the adjacent figure.
+11. Compare source and target presentation: heading levels, quote blocks, blank-line rhythm, list nesting, table geometry, text colors, and captions remain intact unless an approved restyle is recorded.
 
 The target is not a short document at any cost. The target is high decision density with no missing boundary that could cause divergent implementations.

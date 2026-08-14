@@ -133,6 +133,57 @@ Only a link, no screenshot or media handoff.
     else:
         print("ok   numbered-figure-caption")
 
+    implementation_ready_good = """# Merchant Unlock Requirement
+
+> **Type:** Feature iteration
+> **Status:** Accepted
+
+## Product Unlock
+
+Completing the promotion unlocks tier-two products.
+
+## 验收口径
+
+- [ ] Given the account meets tier-two conditions, completing promotion changes the merchant to tier two and unlocks tier-two products.
+"""
+    implementation_ready_bad = """# Merchant Unlock Requirement
+
+## 关联系统与边界
+
+The merchant depends on storage.
+
+## 冻结决策与待确认项
+
+- Default tier: TBD
+
+## 验收口径
+
+Engineering checks the feature after implementation.
+"""
+    implementation_good_errors = [
+        f for f in sl.run_checks(implementation_ready_good, implementation_ready=True)
+        if f.severity == "ERROR"
+    ]
+    implementation_bad_rules = {
+        f.rule for f in sl.run_checks(implementation_ready_bad, implementation_ready=True)
+    }
+    expected_implementation = {
+        "implementation-ready-unresolved-heading",
+        "implementation-ready-unresolved-marker",
+        "implementation-ready-self-check-not-checklist",
+        "standalone-coupling-heading",
+    }
+    if implementation_good_errors:
+        failed += 1
+        print("FAIL implementation-ready-good")
+        for finding in implementation_good_errors:
+            print(f"  {finding.rule}: {finding.message}")
+    elif not expected_implementation.issubset(implementation_bad_rules):
+        failed += 1
+        print(f"FAIL implementation-ready-bad: got {implementation_bad_rules}")
+    else:
+        print("ok   implementation-ready-gate")
+
     rendered_good = """<title>Merchant Trading Spec</title><h2>Feature Details</h2><h3>1. Trading Entry</h3><p>Text.</p><h4>1.1. Cost Preview</h4><ul><li>Text.</li></ul><h2>Delivery / Handoff</h2><h3>Resource List</h3><h4>Engineering</h4><h5>Purchase Flow</h5><checkbox done="false">Validate price</checkbox>"""
     rendered_bad = """<title></title><h2>Feature Details</h2><h3>Trading Entry</h3><p>Text.</p><h4>Cost Preview</h4><ul><li>Text.</li></ul><h2>Delivery / Handoff</h2><h3>Resource List</h3><h4>Engineering</h4><checkbox done="false">Validate price</checkbox>"""
     rendered_good_errors = [
@@ -170,9 +221,19 @@ Only a link, no screenshot or media handoff.
         capture_output=True,
         check=False,
     ).returncode
-    if rc_bad != 1 or rc_rendered_bad != 1:
+    rc_implementation_bad = subprocess.run(
+        [sys.executable, SCRIPT, "--implementation-ready", "-"],
+        input=implementation_ready_bad,
+        text=True,
+        capture_output=True,
+        check=False,
+    ).returncode
+    if rc_bad != 1 or rc_rendered_bad != 1 or rc_implementation_bad != 1:
         failed += 1
-        print(f"FAIL cli-exit-codes: bad={rc_bad}, rendered_bad={rc_rendered_bad}")
+        print(
+            "FAIL cli-exit-codes: "
+            f"bad={rc_bad}, rendered_bad={rc_rendered_bad}, implementation_bad={rc_implementation_bad}"
+        )
     else:
         print("ok   cli-exit-codes")
 
